@@ -1,0 +1,28 @@
+---
+title: "data_science"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{data_science}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(skillsNet)
+```
+
+```{r}
+
+(makeRootSkillCluster("Rlang", 1) %>% 
+  rbind(makeSpecificSkillCluster("Dplyr", "Rlang", 0.5, "Usage of the Dyplr Package to perform the full range of data manipulation", "2018-01-01")) %>% 
+  rbind(makeSpecificSkillCluster("Data.table", "Rlang", 1)) ->
+  test_data)
+```
