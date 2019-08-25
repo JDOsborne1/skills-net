@@ -25,7 +25,10 @@ library(skillsNet)
 ## building skills clusters
 ```{r bulding R language skill cluster}
 
-makeRootSkillCluster("Rlang", 1) %>% 
+makeRootSkillCluster("Rlang"
+                     , 1
+                     , "2018-08-10"
+                     ) %>% 
   rbind(makeSpecificSkillCluster("Dplyr"
                                  , "Rlang"
                                  , 0.5

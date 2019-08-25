@@ -4,12 +4,14 @@
 \alias{makeRootSkillCluster}
 \title{Make RS Cluster}
 \usage{
-makeRootSkillCluster(skill_base_name, base_difficulty)
+makeRootSkillCluster(skill_base_name, base_difficulty, added_date = NULL)
 }
 \arguments{
 \item{skill_base_name}{The base name of the skill, will be appended with the rs- prefix}
 
 \item{base_difficulty}{The base difficulty of that type of skill}
+
+\item{added_date}{The date that that base skill was added}
 }
 \description{
 Make RS Cluster
