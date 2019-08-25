@@ -48,7 +48,9 @@ head(test_data)
 
 ```{r Building communicating and influencing}
 test_data %>% 
-  rbind(makeRootSkillCluster("Comms_and_influence", 1)) %>% 
+  rbind(makeRootSkillCluster("Comms_and_influence"
+                             , 1
+                             )) %>% 
   rbind(makeSpecificSkillCluster("Explaining complex concepts in basic ways"
                                  , "Comms_and_influence"
                                  , 1

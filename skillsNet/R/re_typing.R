@@ -27,7 +27,9 @@ reType <- function(char) {
 #'
 #' @examples
 applyType <- function(input_type){
-  if(input_type == "nu"){
+  if(is.na(input_type)){
+    function(val) val
+  } else if(input_type == "nu"){
     as.numeric
   } else if(input_type == "da"){
     as.Date
@@ -47,4 +49,12 @@ applyType <- function(input_type){
 #' @export
 #'
 #' @examples
-reTypeVect <- Vectorize(reType)
+reTypeVect <- function(vect) {
+  split_char <- stringr::str_match(vect, "^([a-zA-Z]{2})-(.*)")
+  input_var <- split_char[,3]
+  input_type <- split_char[,2]
+  split_table <- as.matrix(table(input_type))
+  common_type <- rownames(split_table)[which.max(split_table)]
+  if(length(split_table) != 1) warning("There are multiple data types in the table")
+  applyType(common_type)(input_var)
+  }

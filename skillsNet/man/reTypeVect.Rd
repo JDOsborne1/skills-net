@@ -4,7 +4,7 @@
 \alias{reTypeVect}
 \title{Retype Vectorised}
 \usage{
-reTypeVect(char)
+reTypeVect(vect)
 }
 \arguments{
 \item{char}{the formally typed character element}
