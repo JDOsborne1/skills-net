@@ -1,0 +1,73 @@
+---
+title: "aa-skills_overview"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{aa-skills_overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(skillsNet)
+#library(OSButils)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+```
+
+This Vignette will cover the process of operating on the skillsNet to produce an overview plot on the breadth and depth of skills in the skills net
+
+## Data Manipulation
+
+```{r lead and reorganise}
+test_data %>% 
+  #devCom("Filtering to only use the specific skill entries") %>% 
+  filter(grepl("ss-.*", Origin)) %>% 
+  #devCom("Filtering to only include the relationships relevenat to the skill weight and the root skill") %>% 
+  filter(Relationship %in% c("has.root", "has.weight")) %>% 
+  #devCom("Spreading the triplets into a proper dataframe") %>% 
+  spread(key = Relationship, value = Value) %>% 
+  #devCom("Apllying the types of the values to the relationship elements") %>% 
+  mutate_at(vars(starts_with("has.")), reTypeVect) ->
+    skills_depth_and_breadth
+  
+```
+## Plotting
+
+```{r building basic plot}
+skills_depth_and_breadth %>% 
+  ggplot(
+    aes(
+      x = has.root
+      , y = has.weight
+      #, fill = Origin
+      )
+    
+    ) +
+  geom_col(
+    colour = "white"
+    ) +
+  geom_text(
+    aes(label = Origin)
+    , position = "stack"
+    # This is incomplete, need to reuse the text resizing and aligning package found for an earlier analysis
+    , vjust = 2
+  ) +
+  scale_y_reverse() +
+  scale_x_discrete(position = "top") +
+  theme_classic() +
+  labs(
+    #title = "Plot of the depth of skills in each root skill class"
+    x = "Root Skill"
+    , y = "Depth"
+  )
+
+```
+
