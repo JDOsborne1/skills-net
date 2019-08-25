@@ -32,7 +32,19 @@ applyType <- function(input_type){
   } else if(input_type == "da"){
     as.Date
   } else {
-    function(input) input
+    function(input) gsub("_", " ", input)
   }
 
 }
+
+#' Retype Vectorised
+#'
+#' @description Function to re-apply the internal typeing of the stored var
+#'
+#' @param char the formally typed character element
+#'
+#' @return
+#' @export
+#'
+#' @examples
+reTypeVect <- Vectorize(reType)
