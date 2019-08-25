@@ -50,6 +50,7 @@ head(test_data)
 test_data %>% 
   rbind(makeRootSkillCluster("Comms_and_influence"
                              , 1
+                             , "2017-10-10"
                              )) %>% 
   rbind(makeSpecificSkillCluster("Explaining complex concepts in basic ways"
                                  , "Comms_and_influence"
