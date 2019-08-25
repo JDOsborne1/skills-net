@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 Building up the data science skills net using the package
 
 
@@ -21,11 +22,63 @@ knitr::opts_chunk$set(
 library(skillsNet)
 ```
 
+## building skills clusters
+```{r bulding R language skill cluster}
+
+makeRootSkillCluster("Rlang", 1) %>% 
+  rbind(makeSpecificSkillCluster("Dplyr"
+                                 , "Rlang"
+                                 , 0.5
+                                 , "Usage of the Dyplr Package to perform the full range of data manipulation"
+                                 , "2018-01-01"
+                                 )) %>% 
+  rbind(makeSpecificSkillCluster("Data.table"
+                                 , "Rlang"
+                                 , 1
+                                 )) ->
+    test_data
+```
+
+```{r showing structure}
+head(test_data)
+```
+
+```{r Building communicating and influencing}
+test_data %>% 
+  rbind(makeRootSkillCluster("Comms_and_influence", 1)) %>% 
+  rbind(makeSpecificSkillCluster("Explaining complex concepts in basic ways"
+                                 , "Comms_and_influence"
+                                 , 1
+                                 , "Communicating the complex work done in data science, such as analytical pipelines, data concerns and modelling decisions"
+                                 , "2019-08-09" 
+                                 )) %>% 
+  rbind(makeSpecificSkillCluster("Constructing and Hosting Knowledge shares"
+                                 , "Comms_and_influence"
+                                 , 1
+                                 )) -> 
+    test_data
+```
 
 ```{r}
-
-(makeRootSkillCluster("Rlang", 1) %>% 
-  rbind(makeSpecificSkillCluster("Dplyr", "Rlang", 0.5, "Usage of the Dyplr Package to perform the full range of data manipulation", "2018-01-01")) %>% 
-  rbind(makeSpecificSkillCluster("Data.table", "Rlang", 1)) ->
-  test_data)
+tail(test_data)
 ```
+
+
+## Adding verification layer
+
+Often, you want for a skills matrix to be supported or verified by a supervisor or management entity. To avoid issues of fraudulent or ignorant self-certification. 
+
+By adding a verified by level, around which a series of authentications steps could be later built, then we have the basis of a fully flexible skills reporting database. 
+
+
+```{r Adding Rlang verification}
+test_data %>% 
+  rbind(verifySpecificSkillCluster("Rlang", "Ace Bepson")) ->
+    test_data
+```
+
+
+```{r showing off changes}
+tail(test_data)
+```
+
