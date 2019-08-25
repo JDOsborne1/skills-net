@@ -20,6 +20,7 @@ library(skillsNet)
 library(tidyr)
 library(dplyr)
 library(ggplot2)
+library(plotly)
 ```
 
 This Vignette will cover the process of operating on the skillsNet to produce an overview plot on the breadth and depth of skills in the skills net
@@ -47,19 +48,19 @@ skills_depth_and_breadth %>%
     aes(
       x = has.root
       , y = has.weight
-      #, fill = Origin
+      , fill = Origin
       )
     
     ) +
   geom_col(
     colour = "white"
     ) +
-  geom_text(
-    aes(label = Origin)
-    , position = "stack"
+#  geom_text(
+#    aes(label = Origin)
+#    , position = "stack"
     # This is incomplete, need to reuse the text resizing and aligning package found for an earlier analysis
-    , vjust = 2
-  ) +
+ #   , vjust = 2
+#  ) +
   scale_y_reverse() +
   scale_x_discrete(position = "top") +
   theme_classic() +
@@ -67,7 +68,11 @@ skills_depth_and_breadth %>%
     #title = "Plot of the depth of skills in each root skill class"
     x = "Root Skill"
     , y = "Depth"
-  )
-
+  ) +
+  theme(legend.position = "none") ->
+  skills_depth_and_breadth_plot_basic
+```
+```{r making interactive plot}
+ggplotly( skills_depth_and_breadth_plot_basic)
 ```
 
