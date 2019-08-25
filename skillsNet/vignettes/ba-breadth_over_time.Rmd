@@ -1,0 +1,83 @@
+---
+title: "ba-breadth_over_time"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ba-breadth_over_time}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(skillsNet)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tibble)
+
+```
+
+
+This Vignette will cover the process of building the skills breadth over time visual
+
+## Data Manipulation
+
+```{r Extract and transform}
+skillsNet::test_data %>% 
+  filter(grepl("rs-.*", Origin)) %>% 
+  # filtering for only the relevant rels
+  filter(Relationship %in% c("has.base", "added.date")) %>% 
+  # Spreading the relationships
+  spread(key = Relationship, value = Value) %>% 
+  # applying classes
+  mutate_at(vars(one_of(c("has.base", "added.date"))), reTypeVect) ->
+    base_breadth_over_time
+base_breadth_over_time
+  
+```
+
+
+
+
+
+Now that we have the base skill value and the time added, we need to complete the day cases so we can produce a complete timeseries.
+
+```{r}
+base_breadth_over_time %>% 
+  with(seq(from = min(added.date), to = max(added.date), by = "1 day")) %>% 
+  enframe(value = "added.date") %>% 
+  left_join(base_breadth_over_time, by = "added.date") %>% 
+  mutate(
+    breadth.val = replace_na(has.base, 0)
+    , sum.val = cumsum(breadth.val)
+    ) %>% 
+  select(added.date, sum.val) ->
+    breadth_over_time_timeseries
+  
+```
+
+
+## Plotting
+
+Once we have a complete timeseries we can build a plot of the cumulative value
+
+```{r building the basic plots}
+breadth_over_time_timeseries %>% 
+  ggplot(aes(
+    x= added.date
+    , y = sum.val
+    )) +
+  geom_line() +
+  theme_classic() +
+  labs(
+    x = "Date"
+    , y = "Total Base Skill Value"
+  )
+```
+
