@@ -23,6 +23,28 @@ library(skillsNet)
 ```
 
 ## building skills clusters
+
+Within R there are many packages which are used to perform tasks. For the most part these are minor entities which only merit a small increase in depth. At times though there are substantial packages which generate a serious boost in productivity or which open up a wide range of entities.
+
+As such the weighting system used is 
+
+```{r defining weighting system}
+minor_package <- 0.1 # casual stuff like ggrepel
+major_package <- 0.5 # important but specialist stuff like dplyr and ggplot
+extraordinary_package <- 1 # major and broad toolkits like mlr and data.table
+```
+
+```{r making wrapper for new packages}
+newPackageCluster <- function(package_name, date = Sys.Date(), weight = minor_package){
+    makeSpecificSkillCluster(skill_spec = package_name
+                                 , skill_base_name = "Rlang"
+                                 , skill_weight = weight
+                                 , skill_comp_date = date
+                                 ) %>% 
+    return()
+}
+```
+
 ```{r bulding R language skill cluster}
 
 makeRootSkillCluster("Rlang"
@@ -43,16 +65,28 @@ makeRootSkillCluster("Rlang"
                                  )) %>% 
   rbind(makeSpecificSkillCluster("Dplyr"
                                  , "Rlang"
-                                 , 0.5
+                                 , major_package
                                  , "Usage of the Dyplr Package to perform the full range of data manipulation"
                                  , "2018-10-01"
                                  )) %>% 
+  rbind(newPackageCluster("ggrepel", date = "2019-04-01")) %>% 
+  rbind(newPackageCluster("ggplot", date = "2019-08-01", weight = major_package)) %>% 
+  rbind(newPackageCluster("testthat")) %>% 
+  rbind(newPackageCluster("devtools")) %>% 
+  rbind(newPackageCluster("usethis", date = "2019-06-10")) %>% 
+  rbind(newPackageCluster("config", date = "2019-01-02")) %>% 
+  rbind(newPackageCluster("forcats")) %>% 
+  rbind(newPackageCluster("lubridate", date = "2018-11-11")) %>% 
+  rbind(newPackageCluster("tidyr")) %>% 
   rbind(makeSpecificSkillCluster("Data.table"
                                  , "Rlang"
-                                 , 1
+                                 , extraordinary_package
                                  )) ->
     test_data
 ```
+
+
+
 
 ```{r }
 head(test_data)
@@ -78,13 +112,13 @@ test_data %>%
                                  )) %>% 
   rbind(makeSpecificSkillCluster("Explaining complex concepts in basic ways"
                                  , "Comms_and_influence"
-                                 , 1
+                                 , extraordinary_package
                                  , "Communicating the complex work done in data science, such as analytical pipelines, data concerns and modelling decisions"
                                  , "2019-08-09" 
                                  )) %>% 
   rbind(makeSpecificSkillCluster("Constructing and Hosting Knowledge shares"
                                  , "Comms_and_influence"
-                                 , 1
+                                 , minor_package
                                  )) -> 
     test_data
 ```
