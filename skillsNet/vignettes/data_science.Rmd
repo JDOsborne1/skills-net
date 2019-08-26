@@ -22,6 +22,37 @@ knitr::opts_chunk$set(
 library(skillsNet)
 ```
 
+```{r defining add passive and active wrappers}
+makePassiveCluster <- function(base_name, base_date = Sys.Date(), base_weight = 0.25){
+  makeSpecificSkillCluster("Passive Familiarity"
+                           , skill_base_name = base_name
+                           , skill_weight = base_weight
+                           , skill_desc = "Familiar with the underlying concepts and mechanical descriptions are not foreign"
+                           , skill_comp_date = base_date
+                          ) %>% 
+    return()
+}
+makeActiveCluster <- function(base_name, base_date = Sys.Date(), base_weight = 0.75){
+  makeSpecificSkillCluster("Active Familiarity"
+                           , skill_base_name = base_name
+                           , skill_weight = base_weight
+                           , skill_desc = "Familiar with mechanics needed to achieve practical concepts and a source of further learning is known"
+                           , skill_comp_date = base_date
+                          ) %>% 
+    return()
+}
+
+newRootSkill <- function(base_name, base_date = Sys.Date(), base_weight = 1.1){
+  makeRootSkillCluster(base_name
+                             , base_weight
+                             , base_date
+                             ) %>% 
+    rbind(makePassiveCluster(base_name, base_date)) %>% 
+    rbind(makeActiveCluster(base_name, base_date)) %>% 
+    return()
+}
+```
+
 ## building skills clusters
 
 Within R there are many packages which are used to perform tasks. For the most part these are minor entities which only merit a small increase in depth. At times though there are substantial packages which generate a serious boost in productivity or which open up a wide range of entities.
@@ -98,6 +129,8 @@ makeRootSkillCluster("Rlang"
 head(test_data)
 ```
 
+
+
 ```{r Building communicating and influencing}
 test_data %>% 
   rbind(makeRootSkillCluster("Comms_and_influence"
@@ -152,6 +185,17 @@ test_data %>%
                                  )) -> test_data
 
 tail(test_data)
+```
+```{r Adding misc skills}
+test_data %>% 
+  rbind(newRootSkill("Acquiring_data")) %>% 
+  rbind(newRootSkill("Understanding_customer_needs")) %>% 
+  rbind(newRootSkill("Working_with_credibility")) %>% 
+  rbind(newRootSkill("Delivery_at_pace")) %>% 
+  rbind(newRootSkill("Presenting_and_disseminating_data_effectively")) %>% 
+  rbind(newRootSkill("Leadership")) -> 
+    test_data
+
 ```
 
 
