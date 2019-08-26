@@ -27,14 +27,19 @@ This Vignette will cover the process of operating on the skillsNet to produce an
 
 ## Data Manipulation
 
+The following manipulation step excludes all the skills which have been projected but not finished, in future it may be useful to add in those elements to see the projected direction
 ```{r lead and reorganise}
 test_data %>% 
   #devCom("Filtering to only use the specific skill entries") %>% 
   filter(grepl("ss-.*", Origin)) %>% 
   #devCom("Filtering to only include the relationships relevenat to the skill weight and the root skill") %>% 
-  filter(Relationship %in% c("has.root", "has.weight")) %>% 
+  filter(Relationship %in% c("has.root", "has.weight", "has.comp.date")) %>% 
   #devCom("Spreading the triplets into a proper dataframe") %>% 
   spread(key = Relationship, value = Value) %>% 
+  
+  #devCom("Filtering out the unfiniished skills") %>% 
+  filter(!is.na(has.comp.date)) %>% 
+  
   #devCom("Apllying the types of the values to the relationship elements") %>% 
   mutate_at(vars(starts_with("has.")), reTypeVect) ->
     skills_depth_and_breadth
