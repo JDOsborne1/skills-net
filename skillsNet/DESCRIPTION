@@ -15,4 +15,6 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports: 
-    magrittr
+    magrittr,
+    stringr,
+    tibble

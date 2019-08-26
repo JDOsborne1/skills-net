@@ -169,7 +169,6 @@ basicTimeVariancePlot <- function(df) {
     geom_line()
 }
 
-value_over_time_nested_timeseries %>% pull(joined.data) %>% lapply(basicTimeVariancePlot)
 
 ```
 

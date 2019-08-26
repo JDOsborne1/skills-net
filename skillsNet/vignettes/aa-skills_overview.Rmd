@@ -74,10 +74,10 @@ skills_depth_and_breadth %>%
     x = "Root Skill"
     , y = "Depth"
   ) +
-  theme(legend.position = "none") ->
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90)) ->
   skills_depth_and_breadth_plot_basic
 ```
-```{r making interactive plot}
+```{r making interactive plot, fig.width=10, fig.height= 8}
 ggplotly( skills_depth_and_breadth_plot_basic)
 ```
 
