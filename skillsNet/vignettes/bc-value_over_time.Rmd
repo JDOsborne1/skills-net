@@ -1,0 +1,197 @@
+---
+title: "bc-value_over_time"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{bc-value_over_time}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(skillsNet)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tibble)
+library(purrr)
+
+mechanism_used <- "power sum"
+```
+
+
+This Vignette contains the process for contructing the visual for the skills "value" over time. At present the mechanism used is the `r mechanism_used`. This may change as a more sophisticated view of the visual is taken.
+
+## Data Manipulation
+
+The triplets will likely have to be split into two tables and joined, one for the root skills and their base weight, and another for the specific skills
+
+```{r Breadth extract}
+
+skillsNet::test_data %>% 
+  filter(grepl("rs-.*", Origin)) %>% 
+  
+  # filtering for only the relevant rels
+  filter(Relationship %in% c("has.base", "added.date")) %>% 
+  
+  # Spreading the relationships
+  spread(key = Relationship, value = Value) %>% 
+  
+  # applying classes
+  mutate_at(vars(one_of(c("has.base", "added.date", "Origin"))), reTypeVect) ->
+    breadth_over_time
+
+breadth_over_time
+```
+
+
+```{r Depth extract}
+skillsNet::test_data %>% 
+  # Filtering to the relevant source
+  filter(grepl("ss-.*", Origin)) %>% 
+  
+  # filtering to only the relevant relationships
+  filter(Relationship %in% c("has.root", "has.weight", "has.comp.date")) %>% 
+  
+  # Spreading the variables to generate the dataset
+  spread(key = Relationship, value = Value) %>% 
+  
+  # Reapplying types
+  mutate_at(vars(-Origin), reTypeVect) ->
+  
+  # casting as new dataset
+    depth_over_time
+
+depth_over_time
+```
+
+```{r Joining the datasets}
+
+depth_over_time %>% 
+  # Joining breadth data to the base depth data
+  left_join(breadth_over_time, by = c("has.root" = "Origin")) %>% 
+  select(-added.date) %>% 
+  
+  # arranging by completion date, to make the cumulative value accurate over time, and to leave the NA's at the end, so that the projected weight of future specific skills wont inflate the value in the present
+  arrange(has.comp.date) %>% 
+  
+  # generating the cumulative sum of weights for each specific skill within each root skill
+  group_by(has.root) %>% 
+  mutate(cum.weight = cumsum(has.weight)) %>% 
+  ungroup() %>% 
+  # generating the power sum at a given date for each root skill 
+  mutate(base.value = has.base ^ cum.weight) %>% 
+  
+  # extracting only useful data
+  select(has.comp.date, has.root, base.value) ->
+  
+    value_over_time
+```
+
+```{r binding into a time series}
+generateRangeTimeseries <- function(df){
+  comp_date_vector <- pull(df, has.comp.date)
+  
+  vector_out <- seq(from = min(comp_date_vector, na.rm = T), to = Sys.Date(), by = "1 day") 
+  enframe(vector_out, name = NULL, value = "has.comp.date") 
+}
+
+value_over_time %>% 
+  group_by(has.root) %>% 
+  nest(has.comp.date, has.root, base.value) %>% 
+  mutate(timeseries = lapply(data, generateRangeTimeseries)) ->
+  value_over_time_nest
+
+```
+
+The nesting methods make the most sense for aligning the datasets for multiple groups, but I am unable to generate a satisfactory method of running the joins within that framework
+
+```{r building functions for the bodged approach}
+listLeftJoin <- function(a_list, join_condition = "has.comp.date") {
+  a_list[[1]] -> element_x
+  a_list[[2]] -> element_y
+  left_join(element_y, element_x, by = join_condition)
+}
+
+#using function from stackoverflow https://stackoverflow.com/questions/5237557/extract-every-nth-element-of-a-vector
+nth_element <- function(vector, starting_position, n) { 
+  vector[seq(starting_position, length(vector), n)] 
+}
+
+reformedListing <- function(col1, col2, var_names){
+  testlist <- list(data = col1, timeseries = col2)
+  
+  testlist2 <- flatten(testlist)
+  jump_step <- length(var_names) 
+  start_levels <- 1:jump_step
+  
+  lapply(start_levels, function(x) nth_element(testlist2, x,  jump_step)) ->test
+  return(test)
+}
+```
+It seems like the list combination of the two columns when they are extracted from the dataset are in the wrong alignment, with the top level list being of the wrong seperation, in this case the timeseries for every root skill, then the data for every root skill, rather than an entry for each skill, within which is the data and the timeseries
+
+
+By abusing the lapply function, I've been able to perform the join I was looking to do, this required a wrapper around left_join and an implementation of transpose/flatten-unflatten which allowed complex types like tibbles with uneven sizes. This is very hacky and maybe an issue should be posted on the repo/stackoverflow.
+
+Some of these approaches may be useful in the future, so it may be useful to migrate them into OSButils and document them properly. 
+
+Additionally, on further consideration, it may be possible to condense the joining into the initially mapped function used to generate the timeseries. That would fix this case, but may not be applicable to others. 
+```{r applying approach}
+value_over_time_nest %>% 
+  # combine the data and timeseries into a single list element for each type, so that lapply can work on it
+  mutate(combined.data.and.timeseries = reformedListing(data, timeseries, has.root)) %>% 
+  
+  # apply the list wrapper around left join
+  mutate(joined.data = lapply(combined.data.and.timeseries, listLeftJoin)) %>% 
+  
+  # Carry forward non missing observations to fill in NA gaps in new timeseries
+  mutate(joined.data = lapply(joined.data, mutate, base.value = zoo::na.locf(base.value) )) %>% 
+  
+  # Select only relevant vars
+  select(has.root, joined.data) -> 
+    value_over_time_nested_timeseries
+```
+
+This generated a timeseries of the value of each root skill over time
+
+
+```{r}
+basicTimeVariancePlot <- function(df) {
+  df %>% 
+    ggplot(aes(x = has.comp.date, y = base.value)) +
+    geom_line()
+}
+
+value_over_time_nested_timeseries %>% pull(joined.data) %>% lapply(basicTimeVariancePlot)
+
+```
+
+
+```{r}
+value_over_time_nested_timeseries %>% 
+  
+  #un nesting
+  unnest() %>% 
+  
+  # ensuring that the maximum base value for each day for each root skill is taken
+  group_by(has.root, has.comp.date) %>% 
+  filter(base.value == max(base.value)) %>% 
+  ungroup() %>% 
+  
+  # calculate sum value
+  group_by(has.comp.date) %>% 
+  summarise(base.value = sum(base.value)) %>% 
+  basicTimeVariancePlot()
+  
+  
+
+```
+
+
