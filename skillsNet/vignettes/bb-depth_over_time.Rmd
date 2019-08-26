@@ -1,0 +1,84 @@
+---
+title: "bb-depth_over_time"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{bb-depth_over_time}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(skillsNet)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tibble)
+
+```
+
+
+This Vignette will cover the process of building the depth over time visual
+
+## Data manipulation
+
+```{r drawing and reordering the data}
+test_data %>% 
+  # Filtering to the relevant source
+  filter(grepl("ss-.*", Origin)) %>% 
+  
+  # filtering to only the relevant relationships
+  filter(Relationship %in% c("has.root", "has.weight", "has.comp.date")) %>% 
+  
+  # Spreading the variables to generate the dataset
+  spread(key = Relationship, value = Value) %>% 
+  
+  # Reapplying types
+  mutate_at(vars(-Origin), reTypeVect) ->
+  
+  # casting as new dataset
+    depth_over_time
+
+```
+
+Now the data has the correct format, it needs to be cast into a proper time series
+
+```{r generating complete timeseries and adding event data}
+
+depth_over_time %>% 
+  with(seq(from = min(has.comp.date, na.rm = T), to = max(has.comp.date, na.rm = T), by = "1 day")) %>% 
+  enframe(value = "has.comp.date") %>% 
+  left_join(depth_over_time, by = "has.comp.date") %>% 
+  mutate(
+    depth.val = replace_na(has.weight, 0)
+    , sum.val = cumsum(depth.val)
+    ) %>% 
+  select(has.comp.date, sum.val) ->
+    depth_over_time_timeseries
+
+```
+
+Now the data is a full timeseries we can put together the basic over time plot of the cumulative value
+
+## Plotting
+
+
+```{r building the basic plots}
+depth_over_time_timeseries %>% 
+  ggplot(aes(
+    x= has.comp.date
+    , y = sum.val
+    )) +
+  geom_line() +
+  theme_classic() +
+  labs(
+    x = "Date"
+    , y = "Total SkillDepth Value"
+  )
+```
