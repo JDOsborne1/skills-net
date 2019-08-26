@@ -69,6 +69,12 @@ makeRootSkillCluster("Rlang"
                                  , "Usage of the Dyplr Package to perform the full range of data manipulation"
                                  , "2018-10-01"
                                  )) %>% 
+  rbind(makeSpecificSkillCluster("Package Creation"
+                                 , "Rlang"
+                                 , major_package
+                                 , "Knowledge of how to build and release packages for use in R"
+                                 , "2019-04-01"
+                                 )) %>% 
   rbind(newPackageCluster("ggrepel", date = "2019-04-01")) %>% 
   rbind(newPackageCluster("ggplot", date = "2019-08-01", weight = major_package)) %>% 
   rbind(newPackageCluster("testthat")) %>% 
