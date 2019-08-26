@@ -41,7 +41,7 @@ makeRootSkillCluster <- function(skill_base_name, base_difficulty, added_date = 
 #' @examples
 makeSpecificSkillCluster <- function(skill_spec, skill_base_name, skill_weight, skill_desc = NULL, skill_comp_date = NULL){
   skill_root_name <- paste0("rs-", skill_base_name)
-  skill_name <- paste0("ss-", skill_spec)
+  skill_name <- paste0("ss-",skill_base_name, "-", skill_spec)
   skill_weight_typed <- paste0("nu-", skill_weight)
   skill_comp_date_typed <- paste0("da-", skill_comp_date)
   cluster_tibble <- tibble::tribble(~Origin, ~Relationship, ~Value,
