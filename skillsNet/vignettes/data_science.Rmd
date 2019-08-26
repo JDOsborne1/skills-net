@@ -54,7 +54,7 @@ makeRootSkillCluster("Rlang"
     test_data
 ```
 
-```{r showing structure}
+```{r }
 head(test_data)
 ```
 
@@ -90,6 +90,27 @@ test_data %>%
 ```
 
 ```{r}
+tail(test_data)
+```
+```{r Financial Modelling}
+test_data %>% 
+  rbind(makeRootSkillCluster("Fin_models"
+                             , 1.1
+                             , "2017-08-10"
+                             )) %>% 
+    rbind(makeSpecificSkillCluster("Passive Familiarity"
+                                 , "Fin_models"
+                                 , 0.25
+                                 , "Familiar with the underlying concepts and mechanical descriptions are not foreign"
+                                 , "2017-08-10"
+                                 )) %>% 
+  rbind(makeSpecificSkillCluster("Active Familiarity"
+                                 , "Fin_models"
+                                 , 0.75
+                                 , "Familiar with mechanics needed to achieve practical concepts and a source of further learning is known"
+                                 , "2019-08-26"
+                                 )) -> test_data
+
 tail(test_data)
 ```
 
