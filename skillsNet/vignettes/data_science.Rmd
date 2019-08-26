@@ -26,7 +26,7 @@ library(skillsNet)
 ```{r bulding R language skill cluster}
 
 makeRootSkillCluster("Rlang"
-                     , 1
+                     , 1.2
                      , "2018-08-10"
                      ) %>% 
   rbind(makeSpecificSkillCluster("Passive Familiarity"
@@ -61,7 +61,7 @@ head(test_data)
 ```{r Building communicating and influencing}
 test_data %>% 
   rbind(makeRootSkillCluster("Comms_and_influence"
-                             , 1
+                             , 1.1
                              , "2017-10-10"
                              )) %>% 
     rbind(makeSpecificSkillCluster("Passive Familiarity"
