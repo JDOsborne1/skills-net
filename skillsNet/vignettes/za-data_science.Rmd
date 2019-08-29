@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Appendix 1: Data Science skillsNet
 
 Building up the data science skills net using the package
 
@@ -18,7 +19,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup data_science testing elements}
 library(skillsNet)
 ```
 

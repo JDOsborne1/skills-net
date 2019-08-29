@@ -1,11 +1,12 @@
 ---
-title: "bb-depth_over_time"
+title: "Depth Over Time"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{bb-depth_over_time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+# Depth Over Time
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -14,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup depth over time}
 library(skillsNet)
 library(dplyr)
 library(tidyr)
@@ -69,7 +70,7 @@ Now the data is a full timeseries we can put together the basic over time plot o
 ## Plotting
 
 
-```{r building the basic plots}
+```{r building the basic depth plots}
 depth_over_time_timeseries %>% 
   ggplot(aes(
     x= has.comp.date

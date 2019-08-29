@@ -1,11 +1,12 @@
 ---
-title: "aa-skills_overview"
+title: "Skills Overview"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{aa-skills_overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+# Skills Overview
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -14,9 +15,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup skills overview}
 library(skillsNet)
-#library(OSButils)
 library(tidyr)
 library(dplyr)
 library(ggplot2)

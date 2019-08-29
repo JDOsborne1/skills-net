@@ -1,11 +1,12 @@
 ---
-title: "bc-value_over_time"
+title: "Value Over Time"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{bc-value_over_time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+# Value Over Time
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -14,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup value over time}
 library(skillsNet)
 library(dplyr)
 library(tidyr)

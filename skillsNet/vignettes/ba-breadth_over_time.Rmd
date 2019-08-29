@@ -1,11 +1,12 @@
 ---
-title: "ba-breadth_over_time"
+title: "Breadth Over Time"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ba-breadth_over_time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+# Breadth Over Time
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -14,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup breadth over time}
 library(skillsNet)
 library(dplyr)
 library(tidyr)
@@ -67,7 +68,7 @@ base_breadth_over_time %>%
 
 Once we have a complete timeseries we can build a plot of the cumulative value
 
-```{r building the basic plots}
+```{r building the basic breadth plots}
 breadth_over_time_timeseries %>% 
   ggplot(aes(
     x= added.date
