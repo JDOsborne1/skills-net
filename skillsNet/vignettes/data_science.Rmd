@@ -118,6 +118,10 @@ makeRootSkillCluster("Rlang"
   rbind(makeSpecificSkillCluster("Data.table"
                                  , "Rlang"
                                  , extraordinary_package
+                                 )) %>% 
+  rbind(makeSpecificSkillCluster("Shiny"
+                                 , "Rlang"
+                                 , extraordinary_package
                                  )) ->
     test_data
 ```
@@ -188,13 +192,42 @@ tail(test_data)
 ```
 ```{r Adding misc skills}
 test_data %>% 
-  rbind(newRootSkill("Acquiring_data")) %>% 
-  rbind(newRootSkill("Understanding_customer_needs")) %>% 
-  rbind(newRootSkill("Working_with_credibility")) %>% 
-  rbind(newRootSkill("Delivery_at_pace")) %>% 
-  rbind(newRootSkill("Presenting_and_disseminating_data_effectively")) %>% 
-  rbind(newRootSkill("Leadership")) -> 
+  rbind(newRootSkill("Acquiring_data", base_date = "2019-08-15")) %>% 
+  rbind(newRootSkill("Understanding_customer_needs", base_date = "2019-08-15")) %>% 
+  rbind(newRootSkill("Working_with_credibility", base_date = "2019-08-15")) %>% 
+  rbind(newRootSkill("Presenting_and_disseminating_data_effectively", base_date = "2019-08-15")) %>% 
+  rbind(newRootSkill("Leadership", base_date = "2019-08-15")) -> 
     test_data
+
+```
+
+
+```{r adding training framework}
+test_data %>% 
+  rbind(newRootSkill("GIS_Mapping", base_date = "2019-08-29")) %>% 
+  rbind(makeSpecificSkillCluster("Leaflet", "GIS_Mapping", 0.25, "Understanding the leaflet package, and the elements in it")) %>% 
+  
+  rbind(makeSpecificSkillCluster("Altair", "Interactive_Viz", 0.1, "Understanding the Altair package, and the elements in it")) %>% 
+  rbind(makeSpecificSkillCluster("ggplotly", "Interactive_Viz", 0.1, "Understanding the ggplotly package, and the elements in it")) %>% 
+  rbind(makeSpecificSkillCluster("Highcharts", "Interactive_Viz", 0.1, "Understanding the Highcharts package, and the elements in it")) %>% 
+  rbind(makeSpecificSkillCluster("d3.js", "Interactive_Viz", 0.5, "Understanding the d3.js package, and the elements in it")) %>% 
+  rbind(newRootSkill("Interactive_Viz", base_date = "2019-08-29")) -> 
+    test_data
+
+
+```
+
+```{r making tableau framework}
+test_data %>% 
+  rbind(newRootSkill("Tableau", base_date = "2019-05-01")) %>% 
+  rbind(makeSpecificSkillCluster("Visual Analytics", "Tableau", 0.1, "Using Tableau to present data visually: Intro")) %>% 
+  rbind(makeSpecificSkillCluster("Connecting to data", "Tableau", 0.25, "The various methods of connecting to data in tableau", "2019-07-01")) %>% 
+  rbind(makeSpecificSkillCluster("Dashboards and Stories", "Tableau", 0.1, "Using the Dashboards and Stories elements within tableau to stich multiple visual analytics elements together")) %>% 
+  rbind(makeSpecificSkillCluster("Mapping", "Tableau", 0.1, "Using tableau to plot geographical elements of an analysis")) %>% 
+  rbind(makeSpecificSkillCluster("Calculations", "Tableau", 0.1, "Using the internal calculation language in tableau")) %>% 
+  rbind(makeSpecificSkillCluster("R_integration", "Tableau", 0.1, "Using R functions within tableau to perform complex processes")) %>% 
+  rbind(makeSpecificSkillCluster("Publishing", "Tableau", 0.1, "Using tableau online and tableau server to publish work to remote entities")) ->
+  test_data
 
 ```
 
