@@ -109,16 +109,21 @@ makeRootSkillCluster("Rlang"
                                  )) %>% 
   rbind(newPackageCluster("ggrepel", date = "2019-04-01")) %>% 
   rbind(newPackageCluster("ggplot", date = "2019-08-01", weight = major_package)) %>% 
-  rbind(newPackageCluster("testthat")) %>% 
-  rbind(newPackageCluster("devtools")) %>% 
+  rbind(newPackageCluster("testthat", date = "2019-06-11")) %>% 
+  rbind(newPackageCluster("devtools", date = "2019-07-10")) %>% 
   rbind(newPackageCluster("usethis", date = "2019-06-10")) %>% 
   rbind(newPackageCluster("config", date = "2019-01-02")) %>% 
-  rbind(newPackageCluster("forcats")) %>% 
+  rbind(newPackageCluster("forcats", date = "2019-01-01")) %>% 
   rbind(newPackageCluster("lubridate", date = "2018-11-11")) %>% 
-  rbind(newPackageCluster("tidyr")) %>% 
+  rbind(newPackageCluster("tidyr", date = "2019-05-05")) %>% 
+  rbind(newPackageCluster("glue", date = "2019-09-11")) %>% 
   rbind(makeSpecificSkillCluster("Data.table"
                                  , "Rlang"
                                  , extraordinary_package
+                                 )) %>% 
+  rbind(makeSpecificSkillCluster("Drake"
+                                 , "Rlang"
+                                 , major_package
                                  )) %>% 
   rbind(makeSpecificSkillCluster("Shiny"
                                  , "Rlang"
@@ -163,6 +168,8 @@ test_data %>%
   rbind(makeSpecificSkillCluster("Constructing and Hosting Knowledge shares"
                                  , "Comms_and_influence"
                                  , minor_package
+                                 , "Designing and running knowledge share sessions on Topics which there is a skill disparity"
+                                 , "2019-09-15"
                                  )) -> 
     test_data
 ```
@@ -191,6 +198,7 @@ test_data %>%
 
 tail(test_data)
 ```
+
 ```{r Adding misc skills}
 test_data %>% 
   rbind(newRootSkill("Acquiring_data", base_date = "2019-08-15")) %>% 
@@ -232,6 +240,11 @@ test_data %>%
 
 ```
 
+```{r Working with credibility}
+test_data %>% 
+  rbind(makeSpecificSkillCluster("QA Mechanisms: Explore level", "Working_with_credibility", 0.15, "Have explored and gained a level of familiarity with the ways that we can Assure Quality", "2019-10-02"))
+```
+
 
 ## Adding verification layer
 
@@ -249,5 +262,8 @@ test_data %>%
 
 ```{r showing off changes}
 tail(test_data)
+```
+```{r saving test data}
+usethis::use_data(test_data, overwrite = TRUE)
 ```
 
