@@ -30,33 +30,6 @@ library(ggfittext)
 This Vignette contains the process for generating the recent skills acquired plot
 
 
-## Experimental Plots
-```{r extract experimental data and plot}
-proglangs <- read.csv("https://raw.githubusercontent.com/selva86/datasets/master/proglanguages.csv")
-
-# plot
-treeMapCoordinates <- treemapify(proglangs,
-                                 area = "value",
-                                 fill = "parent",
-                                 label = "id",
-                                 group = "parent") %>% 
-  group_by(id) %>% 
-  mutate(xpos = mean(c(xmin, xmax)), ypos = mean(c(ymin, ymax)))
-
-treeMapCoordinates %>% 
-  ggplot(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)) +
-  geom_rect(aes(fill = parent), colour = "white") +
-  geom_text(aes(x = xpos, y = ypos, label = id)) +
-  theme_bw() -> coord_plot
-
-
-
-```
-
-```{r make interactive plot}
-ggplotly(coord_plot)
-```
-
 ## Data Manipulation
 
 ```{r Extract from triplet table}
